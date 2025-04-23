@@ -12,6 +12,14 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   }
   
+  .movie-card {
+    max-width: 400px;
+  }
+
+  .movie-poster {
+    max-height: 500px;
+  }
+
   .favorites-empty {
     text-align: center;
     padding: 4rem 2rem;

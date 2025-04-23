@@ -1,80 +1,92 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../css/Auth.css';
+"use client"
+
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import "../css/Auth.css"
+import { useAuth } from "../contexts/AuthContext"
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
 
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
+    const { name, value } = e.target
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
+      [name]: value,
+    }))
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
-      }));
+        [name]: "",
+      }))
     }
-  };
+  }
 
   const validateForm = () => {
-    const newErrors = {};
-    
+    const newErrors = {}
+
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required"
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required"
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address"
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required"
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters"
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain uppercase, lowercase, and numbers';
+      newErrors.password = "Password must contain uppercase, lowercase, and numbers"
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password"
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match"
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (validateForm()) {
-      setIsSubmitting(true);
+      setIsSubmitting(true)
       try {
-        // Here you would typically call your signup API
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulating API call
-        // Handle successful signup (e.g., redirect to login or home)
-        console.log('Signup successful:', formData);
+        const result = await register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+        
+        if (result.success) {
+          navigate('/');
+        } else {
+          setErrors({ submit: result.error || "Registration failed. Please try again." });
+        }
       } catch (error) {
-        setErrors({ submit: 'Failed to create account. Please try again.' });
+        setErrors({ submit: "Failed to create account. Please try again." });
       } finally {
         setIsSubmitting(false);
       }
     }
-  };
+  }
 
   return (
     <div className="auth-container">
@@ -84,11 +96,7 @@ const SignUp = () => {
           <p>Join us to track and rate your favorite movies</p>
         </div>
 
-        {errors.submit && (
-          <div className="error-banner">
-            {errors.submit}
-          </div>
-        )}
+        {errors.submit && <div className="error-banner">{errors.submit}</div>}
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
@@ -103,7 +111,7 @@ const SignUp = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={errors.name ? 'error' : ''}
+                className={errors.name ? "error" : ""}
                 placeholder="Enter your full name"
                 autoComplete="name"
               />
@@ -123,7 +131,7 @@ const SignUp = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={errors.email ? 'error' : ''}
+                className={errors.email ? "error" : ""}
                 placeholder="Enter your email"
                 autoComplete="email"
               />
@@ -143,7 +151,7 @@ const SignUp = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={errors.password ? 'error' : ''}
+                className={errors.password ? "error" : ""}
                 placeholder="Create a strong password"
                 autoComplete="new-password"
               />
@@ -163,22 +171,16 @@ const SignUp = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={errors.confirmPassword ? 'error' : ''}
+                className={errors.confirmPassword ? "error" : ""}
                 placeholder="Confirm your password"
                 autoComplete="new-password"
               />
-              {errors.confirmPassword && (
-                <span className="error-message">{errors.confirmPassword}</span>
-              )}
+              {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
             </div>
           </div>
 
-          <button 
-            type="submit" 
-            className={`auth-button ${isSubmitting ? 'loading' : ''}`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Creating Account...' : 'Create Account'}
+          <button type="submit" className={`auth-button ${isSubmitting ? "loading" : ""}`} disabled={isSubmitting}>
+            {isSubmitting ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
@@ -189,7 +191,7 @@ const SignUp = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignUp;
+export default SignUp

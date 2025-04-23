@@ -1,23 +1,45 @@
-import { Routes, Route } from 'react-router-dom'
-import './css/App.css'
-import Home from './pages/Home'
-import Favorites from './pages/Favorites'
-import SignUp from './pages/SignUp'
-import NavBar from './components/NavBar'
-import { MovieProvider } from './contexts/MovieContext'
+import { Routes, Route } from "react-router-dom";
+import "./css/App.css";
+import Home from "./pages/Home";
+import Favorites from "./pages/Favorites";
+import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
+import Watchlist from "./pages/Watchlist";
+import NavBar from "./components/NavBar";
+import { MovieProvider } from "./contexts/MovieContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <MovieProvider>
-    <main className='main-content'>
-    <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/favorites" element={<Favorites />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
-    </main>
-    </MovieProvider>
+    <AuthProvider>
+      <MovieProvider>
+        <main className="main-content">
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route 
+              path="/favorites" 
+              element={
+                <ProtectedRoute>
+                  <Favorites />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/watchlist" 
+              element={
+                <ProtectedRoute>
+                  <Watchlist />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </main>
+      </MovieProvider>
+    </AuthProvider>
   );
 }
 

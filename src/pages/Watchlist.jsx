@@ -1,13 +1,11 @@
-"use client"
-
 import "../css/Favorites.css"
 import { useMovieContext } from "../contexts/MovieContext"
 import MovieCard from "../components/MovieCards"
 import Loader from "../components/Loader"
 import { useState, useEffect } from "react"
 
-function Favorites() {
-  const { favorites } = useMovieContext();
+function Watchlist() {
+  const { watchlist } = useMovieContext();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,13 +19,13 @@ function Favorites() {
     return <Loader />;
   }
 
-  if (!favorites || favorites.length === 0) {
+  if (!watchlist || watchlist.length === 0) {
     return (
       <div className="favorites">
-        <h2>Your Favorites</h2>
+        <h2>Your Watchlist</h2>
         <div className="favorites-empty">
-          <h2>No Favorites Yet</h2>
-          <p>Start adding movies to your favorites!</p>
+          <h2>No Movies in Watchlist</h2>
+          <p>Add movies that you want to watch later!</p>
         </div>
       </div>
     );
@@ -35,13 +33,12 @@ function Favorites() {
 
   return (
     <div className="favorites">
-      <h2>Your Favorites</h2>
+      <h2>Your Watchlist</h2>
       <div className="movies-grid">
-        {favorites
+        {watchlist
           .filter((movie) => movie.poster_path)
           .map((movie) => (
             <MovieCard 
-              style={{maxWidth: "250px"}}
               movie={{
                 ...movie,
                 id: movie.movieId
@@ -54,4 +51,4 @@ function Favorites() {
   );
 }
 
-export default Favorites;
+export default Watchlist;
